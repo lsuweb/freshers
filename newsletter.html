@@ -8,395 +8,198 @@
     <link
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-      integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
-      crossorigin="anonymous"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css"
     />
     <style>
       body {
-        margin: 0;
-        padding: 0;
         background-color: #1e1e1e;
-        font-family: Montserrat, sans-serif;
-        overflow: hidden;
-        /* Hardware acceleration */
-        transform: translateZ(0);
-        will-change: transform;
+        overflow-x: hidden;
       }
 
-      .letter-grid {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100vw;
-        height: 100vh;
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-        grid-template-rows: repeat(auto-fit, minmax(120px, 1fr));
-        gap: 40px;
-        /* Hardware acceleration for the grid */
-        transform: translateZ(0);
-        backface-visibility: hidden;
-      }
-
-      .letter {
-        font-size: 6rem;
-        color: #555;
+      .container {
+        min-height: 100vh;
         display: flex;
         align-items: center;
         justify-content: center;
-        text-align: center;
-        /* Hardware acceleration for each letter */
-        transform: translateZ(0);
-        will-change: contents;
-        /* Prevent text selection for better performance */
-        user-select: none;
-        -webkit-user-select: none;
-        -moz-user-select: none;
-        -ms-user-select: none;
+        position: relative;
       }
 
-      /* Responsive font sizes for better mobile performance */
-      @media (max-width: 768px) {
-        .letter {
-          font-size: 4rem;
-        }
-
-        .letter-grid {
-          grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
-          grid-template-rows: repeat(auto-fit, minmax(80px, 1fr));
-          gap: 20px;
-        }
+      .section {
+        position: absolute;
+        width: 100%;
+        transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
       }
 
-      @media (max-width: 480px) {
-        .letter {
-          font-size: 3rem;
-        }
-
-        .letter-grid {
-          grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
-          grid-template-rows: repeat(auto-fit, minmax(60px, 1fr));
-          gap: 15px;
-        }
-      }
-
-      .logo, .sign-up {
-        opacity: 0;
-      }
-
-      .logo {
-        animation: fadeInOut 5s ease-in-out forwards;
-      }
-
-      .sign-up {
-        animation: fadeInOnly 1s ease-in-out 5s forwards;
-      }
-
-      @keyframes fadeInOut {
-        0% {
-          transform: scale(0.5);
-          opacity: 0;
-        }
-        20% {
-          transform: scale(1);
-          opacity: 1;
-        }
-        80% {
-          transform: scale(1);
-          opacity: 1;
-        }
-        100% {
-          transform: scale(0.5);
-          opacity: 0;
-        }
-      }
-
-      @keyframes fadeInOnly {
+      @keyframes scaleIn {
         from {
           transform: scale(0.5);
-          opacity: 0;
         }
         to {
           transform: scale(1);
-          opacity: 1;
         }
+      }
+
+      #hero {
+        opacity: 1;
+        transform: translateY(0) scale(0.5);
+        transition: transform 1.5s ease;
+      }
+
+      #hero.scaled-up {
+        transform: translateY(0) scale(1);
+      }
+
+      #hero.animate-out {
+        opacity: 0;
+        transform: translateY(-50px);
+        transition: opacity 0.8s ease, transform 0.8s ease;
+      }
+
+      #signup {
+        opacity: 0;
+        transform: translateY(50px);
+        pointer-events: none;
+      }
+
+      #signup.animate-in {
+        opacity: 1;
+        transform: translateY(0);
+        pointer-events: auto;
+      }
+
+      .card {
+        background: linear-gradient(135deg, #2a2a2a 0%, #1e1e1e 100%);
+        border: 1px solid #444;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      }
+
+      .card-body {
+        padding: 2rem;
+        color: white;
+        text-align: center;
+      }
+
+      .signup-title {
+        background: linear-gradient(45deg, #7ed321, #e91e63, #ffc107);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        font-size: 2rem;
+        font-weight: bold;
+        margin-bottom: 1.5rem;
+      }
+
+      .form-control {
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: white;
+        border-radius: 10px;
+        padding: 0.75rem 1rem;
+      }
+
+      .form-control:focus {
+        background: rgba(255, 255, 255, 0.15);
+        border-color: #e91e63;
+        color: white;
+        box-shadow: 0 0 0 0.2rem rgba(233, 30, 99, 0.25);
+      }
+
+      .form-control::placeholder {
+        color: rgba(255, 255, 255, 0.6);
+      }
+
+      .btn-primary {
+        background: linear-gradient(45deg, #e91e63, #ffc107);
+        border: none;
+        border-radius: 10px;
+        padding: 0.75rem 2rem;
+        font-weight: bold;
+        transition: transform 0.2s ease;
+      }
+
+      .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(233, 30, 99, 0.4);
       }
     </style>
   </head>
 
   <body>
-    <div class="letter-grid" id="letterGrid" style="z-index: -1"></div>
-
     <div class="container">
-      <div class="row justify-content-center align-items-center min-vh-100">
-        <div class="col col-md-6 col-lg-6">
-          <img src="img/logo.png" class="img-fluid mb-5 logo" />
+      <div class="row section" id="hero">
+        <div class="col col-sm-10 col-md-10 col-lg-8 col-xl-8 mx-auto">
+          <img src="img/logo.png" class="img-fluid" />
+        </div>
+      </div>
 
-          <div class="card text-center p-3 sign-up">
-            <p>Be the first to hear about Freshers 2025!</p>
-
-            <!-- Start MailChimp Signup -->
-            <div id="mc_embed_shell">
-              <link
-                href="//cdn-images.mailchimp.com/embedcode/classic-061523.css"
-                rel="stylesheet"
-                type="text/css"
-              />
-              <div id="mc_embed_signup">
-                <form
-                  action="https://lsu.us14.list-manage.com/subscribe/post?u=3fbe06c4b5aae68573aca449f&amp;id=f4f04f8c53&amp;f_id=007b5ce5f0"
-                  method="post"
-                  id="mc-embedded-subscribe-form"
-                  name="mc-embedded-subscribe-form"
-                  class="validate m-0"
-                  target="_blank"
-                >
-                  <div id="mc_embed_signup_scroll">
-                    <div class="mc-field-group w-100">
-                      <input
-                        type="email"
-                        name="EMAIL"
-                        class="required email"
-                        id="mce-EMAIL"
-                        required=""
-                        value=""
-                        placeholder="Enter your email address"
-                      />
-                    </div>
-
-                    <div id="mce-responses" class="clear">
-                      <div
-                        class="response"
-                        id="mce-error-response"
-                        style="display: none"
-                      ></div>
-                      <div
-                        class="response"
-                        id="mce-success-response"
-                        style="display: none"
-                      ></div>
-                    </div>
-                    <div
-                      aria-hidden="true"
-                      style="position: absolute; left: -5000px"
-                    >
-                      <input
-                        type="text"
-                        name="b_3fbe06c4b5aae68573aca449f_f4f04f8c53"
-                        tabindex="-1"
-                        value=""
-                      />
-                    </div>
-                    <div class="clear text-center">
-                      <input
-                        type="submit"
-                        name="subscribe"
-                        id="mc-embedded-subscribe"
-                        class="button m-0"
-                        value="Subscribe"
-                      />
-                    </div>
-                  </div>
-                </form>
-              </div>
-              <script
-                type="text/javascript"
-                src="//s3.amazonaws.com/downloads.mailchimp.com/js/mc-validate.js"
-              ></script>
-              <script type="text/javascript">
-                (function ($) {
-                  window.fnames = new Array();
-                  window.ftypes = new Array();
-                  fnames[0] = "EMAIL";
-                  ftypes[0] = "email";
-                })(jQuery);
-                var $mcj = jQuery.noConflict(true);
-              </script>
+      <div class="row section" id="signup">
+        <div class="col col-sm-10 col-md-10 col-lg-8 col-xl-8 mx-auto">
+          <div class="card">
+            <div class="card-body">
+              <h2 class="signup-title">Join the Experience</h2>
+              <p class="text-light mb-4">
+                Get ready for the ultimate freshers experience at Loughborough
+                University
+              </p>
+              <form>
+                <div class="mb-3">
+                  <input
+                    type="text"
+                    class="form-control"
+                    placeholder="Full Name"
+                    required
+                  />
+                </div>
+                <div class="mb-3">
+                  <input
+                    type="email"
+                    class="form-control"
+                    placeholder="University Email"
+                    required
+                  />
+                </div>
+                <div class="mb-3">
+                  <input
+                    type="tel"
+                    class="form-control"
+                    placeholder="Phone Number"
+                    required
+                  />
+                </div>
+                <button type="submit" class="btn btn-primary btn-lg w-100">
+                  Secure Your Place
+                </button>
+              </form>
             </div>
-            <!-- End MailChimp Signup -->
           </div>
         </div>
       </div>
     </div>
 
-    <script
-      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-      integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-      crossorigin="anonymous"
-    ></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
     <script>
-      // Pre-compile arrays for better performance
-      const fonts = [
-        "krok",
-        "octothorpe-pe",
-        "carol-gothic",
-        "tephra",
-        "strenuous-3d",
-        "synthemesc",
-        "viva-std-condensed",
-        "macula-solid",
-      ];
-      const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-      const letterCount = letters.length;
-      const fontCount = fonts.length;
+      // Initialize AOS
+      AOS.init({
+        duration: 800,
+      });
+      const hero = document.getElementById("hero");
+      const signup = document.getElementById("signup");
 
-      // Cache DOM elements
-      let grid = null;
-      let gridElements = [];
-      let animationId = null;
-      let lastUpdate = 0;
-      let isVisible = true;
+      setTimeout(() => {
+        hero.classList.add("scaled-up");
+      }, 100);
 
-      // Performance settings based on device
-      let updateInterval = 50;
-      let cellSize = 160;
-
-      // Detect device capabilities
-      function detectDevice() {
-        const isMobile =
-          /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
-            navigator.userAgent
-          );
-        const isLowEnd =
-          navigator.hardwareConcurrency <= 2 || navigator.deviceMemory <= 2;
-
-        if (isMobile || isLowEnd) {
-          updateInterval = 100; // Slower updates on mobile/low-end devices
-          cellSize = window.innerWidth < 768 ? 100 : 140;
-        }
-      }
-
-      // Optimized random number generation
-      function fastRandom(max) {
-        return Math.floor(Math.random() * max);
-      }
-
-      // Efficient grid creation with object pooling
-      function createLetterGrid() {
-        if (!grid) {
-          grid = document.getElementById("letterGrid");
-        }
-
-        const gridWidth = Math.ceil(window.innerWidth / cellSize);
-        const gridHeight = Math.ceil(window.innerHeight / cellSize);
-        const totalLetters = gridWidth * gridHeight;
-
-        // Only recreate if count changed significantly (avoid constant recreation)
-        const currentCount = gridElements.length;
-        const countDifference = Math.abs(currentCount - totalLetters);
-
-        if (countDifference > 5) {
-          // Clear existing elements
-          grid.innerHTML = "";
-          gridElements = [];
-
-          // Create document fragment for efficient DOM manipulation
-          const fragment = document.createDocumentFragment();
-
-          for (let i = 0; i < totalLetters; i++) {
-            const div = document.createElement("div");
-            div.className = "letter";
-            div.textContent = letters[fastRandom(letterCount)];
-            div.style.fontFamily = fonts[fastRandom(fontCount)];
-            div.nextUpdate = Date.now() + fastRandom(300) + 300;
-
-            fragment.appendChild(div);
-            gridElements.push(div);
-          }
-
-          grid.appendChild(fragment);
-        }
-      }
-
-      // Optimized update function using requestAnimationFrame
-      function update(timestamp) {
-        // Throttle updates based on device capabilities
-        if (timestamp - lastUpdate < updateInterval) {
-          animationId = requestAnimationFrame(update);
-          return;
-        }
-
-        lastUpdate = timestamp;
-        const now = Date.now();
-
-        // Batch DOM updates for better performance
-        const elementsToUpdate = [];
-
-        for (let i = 0; i < gridElements.length; i++) {
-          const letter = gridElements[i];
-
-          if (now >= letter.nextUpdate) {
-            elementsToUpdate.push({
-              element: letter,
-              letter: letters[fastRandom(letterCount)],
-              font: fonts[fastRandom(fontCount)],
-              nextUpdate: now + fastRandom(300) + 300,
-            });
-          }
-        }
-
-        // Apply updates in a single batch
-        if (elementsToUpdate.length > 0) {
-          for (const update of elementsToUpdate) {
-            update.element.textContent = update.letter;
-            update.element.style.fontFamily = update.font;
-            update.element.nextUpdate = update.nextUpdate;
-          }
-        }
-
-        if (isVisible) {
-          animationId = requestAnimationFrame(update);
-        }
-      }
-
-      // Debounced resize handler
-      let resizeTimeout;
-      function handleResize() {
-        clearTimeout(resizeTimeout);
-        resizeTimeout = setTimeout(() => {
-          createLetterGrid();
-        }, 250);
-      }
-
-      // Visibility API to pause animations when page is hidden
-      function handleVisibilityChange() {
-        if (document.hidden) {
-          isVisible = false;
-          if (animationId) {
-            cancelAnimationFrame(animationId);
-          }
-        } else {
-          isVisible = true;
-          animationId = requestAnimationFrame(update);
-        }
-      }
-
-      // Initialize
-      function init() {
-        detectDevice();
-        createLetterGrid();
-
-        // Start animation loop
-        animationId = requestAnimationFrame(update);
-
-        // Event listeners
-        window.addEventListener("resize", handleResize, { passive: true });
-        document.addEventListener("visibilitychange", handleVisibilityChange);
-
-        // Cleanup on page unload
-        window.addEventListener("beforeunload", () => {
-          if (animationId) {
-            cancelAnimationFrame(animationId);
-          }
-        });
-      }
-
-      // Start when DOM is ready
-      if (document.readyState === "loading") {
-        document.addEventListener("DOMContentLoaded", init);
-      } else {
-        init();
-      }
+      // Animate transition after 3 seconds
+      setTimeout(() => {
+        // Start the animation sequence
+        hero.classList.add("animate-out");
+        signup.classList.add("animate-in");
+      }, 3000); // 3 second delay
     </script>
   </body>
 </html>
