@@ -80,17 +80,46 @@
         }
       }
 
-      @keyframes slideIn {
-        from {
-          transform: translate(0, 0) scale(1);
-        }
-        to {
-          transform: translate(-40vw, -30vh) scale(0.5);
-        }
+      .logo, .sign-up {
+        opacity: 0;
       }
 
       .logo {
-        animation: slideIn 3s ease-out 3s forwards;
+        animation: fadeInOut 5s ease-in-out forwards;
+      }
+
+      .sign-up {
+        animation: fadeInOnly 1s ease-in-out 5s forwards;
+      }
+
+      @keyframes fadeInOut {
+        0% {
+          transform: scale(0.5);
+          opacity: 0;
+        }
+        20% {
+          transform: scale(1);
+          opacity: 1;
+        }
+        80% {
+          transform: scale(1);
+          opacity: 1;
+        }
+        100% {
+          transform: scale(0.5);
+          opacity: 0;
+        }
+      }
+
+      @keyframes fadeInOnly {
+        from {
+          transform: scale(0.5);
+          opacity: 0;
+        }
+        to {
+          transform: scale(1);
+          opacity: 1;
+        }
       }
     </style>
   </head>
@@ -103,7 +132,7 @@
         <div class="col col-md-6 col-lg-6">
           <img src="img/logo.png" class="img-fluid mb-5 logo" />
 
-          <div class="card text-center p-3">
+          <div class="card text-center p-3 sign-up">
             <p>Be the first to hear about Freshers 2025!</p>
 
             <!-- Start MailChimp Signup -->
