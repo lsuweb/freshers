@@ -1,305 +1,373 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Loughborough Freshers 2025</title>
-    <link rel="stylesheet" href="https://use.typekit.net/voz7sfk.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.typekit.net/voz7sfk.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+      crossorigin="anonymous"
+    />
     <style>
-        body {
-            margin: 0;
-            padding: 0;
-            background-color: #1e1e1e;
-            font-family: Montserrat, sans-serif;
-            overflow: hidden;
-            /* Hardware acceleration */
-            transform: translateZ(0);
-            will-change: transform;
+      body {
+        margin: 0;
+        padding: 0;
+        background-color: #1e1e1e;
+        font-family: Montserrat, sans-serif;
+        overflow: hidden;
+        /* Hardware acceleration */
+        transform: translateZ(0);
+        will-change: transform;
+      }
+
+      .letter-grid {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+        grid-template-rows: repeat(auto-fit, minmax(120px, 1fr));
+        gap: 40px;
+        /* Hardware acceleration for the grid */
+        transform: translateZ(0);
+        backface-visibility: hidden;
+      }
+
+      .letter {
+        font-size: 6rem;
+        color: #555;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        /* Hardware acceleration for each letter */
+        transform: translateZ(0);
+        will-change: contents;
+        /* Prevent text selection for better performance */
+        user-select: none;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+      }
+
+      /* Responsive font sizes for better mobile performance */
+      @media (max-width: 768px) {
+        .letter {
+          font-size: 4rem;
         }
 
         .letter-grid {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-            grid-template-rows: repeat(auto-fit, minmax(120px, 1fr));
-            gap: 40px;
-            /* Hardware acceleration for the grid */
-            transform: translateZ(0);
-            backface-visibility: hidden;
+          grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+          grid-template-rows: repeat(auto-fit, minmax(80px, 1fr));
+          gap: 20px;
         }
+      }
 
+      @media (max-width: 480px) {
         .letter {
-            font-size: 6rem;
-            color: #555;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            /* Hardware acceleration for each letter */
-            transform: translateZ(0);
-            will-change: contents;
-            /* Prevent text selection for better performance */
-            user-select: none;
-            -webkit-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
+          font-size: 3rem;
         }
 
-        /* Responsive font sizes for better mobile performance */
-        @media (max-width: 768px) {
-            .letter {
-                font-size: 4rem;
-            }
-
-            .letter-grid {
-                grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
-                grid-template-rows: repeat(auto-fit, minmax(80px, 1fr));
-                gap: 20px;
-            }
+        .letter-grid {
+          grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
+          grid-template-rows: repeat(auto-fit, minmax(60px, 1fr));
+          gap: 15px;
         }
+      }
 
-        @media (max-width: 480px) {
-            .letter {
-                font-size: 3rem;
-            }
-
-            .letter-grid {
-                grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
-                grid-template-rows: repeat(auto-fit, minmax(60px, 1fr));
-                gap: 15px;
-            }
+      @keyframes slideIn {
+        from {
+          transform: translate(0, 0) scale(1);
         }
+        to {
+          transform: translate(-40vw, -30vh) scale(0.5);
+        }
+      }
+
+      .logo {
+        animation: slideIn 3s ease-out 3s forwards;
+      }
     </style>
-</head>
+  </head>
 
-<body>
+  <body>
     <div class="letter-grid" id="letterGrid" style="z-index: -1"></div>
 
     <div class="container">
-        
-        <div class="row justify-content-center align-items-center min-vh-100">
-            <div class="col col-md-6 col-lg-6">
-                <img src="img/logo.png" class="img-fluid mb-5">
+      <div class="row justify-content-center align-items-center min-vh-100">
+        <div class="col col-md-6 col-lg-6">
+          <img src="img/logo.png" class="img-fluid mb-5 logo" />
 
+          <div class="card text-center p-3">
+            <p>Be the first to hear about Freshers 2025!</p>
 
-                <div class="card text-center p-3">
-                    <p>Be the first to hear about Freshers 2025!</p>
-
-                    <!-- Start MailChimp Signup -->
-                    <div id="mc_embed_shell">
-                        <link href="//cdn-images.mailchimp.com/embedcode/classic-061523.css" rel="stylesheet"
-                            type="text/css">
-                        <div id="mc_embed_signup">
-                            <form
-                                action="https://lsu.us14.list-manage.com/subscribe/post?u=3fbe06c4b5aae68573aca449f&amp;id=f4f04f8c53&amp;f_id=007b5ce5f0"
-                                method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form"
-                                class="validate m-0" target="_blank">
-                                <div id="mc_embed_signup_scroll">
-
-
-                                    <div class="mc-field-group w-100"><input type="email" name="EMAIL"
-                                            class="required email" id="mce-EMAIL" required="" value="" placeholder="Enter your email address"></div>
-
-
-                                    <div id="mce-responses" class="clear">
-                                        <div class="response" id="mce-error-response" style="display: none;"></div>
-                                        <div class="response" id="mce-success-response" style="display: none;"></div>
-                                    </div>
-                                    <div aria-hidden="true" style="position: absolute; left: -5000px;"><input
-                                            type="text" name="b_3fbe06c4b5aae68573aca449f_f4f04f8c53" tabindex="-1"
-                                            value=""></div>
-                                    <div class="clear text-center"><input type="submit" name="subscribe" id="mc-embedded-subscribe"
-                                            class="button m-0" value="Subscribe"></div>
-                                </div>
-                            </form>
-                        </div>
-                        <script type="text/javascript"
-                            src="//s3.amazonaws.com/downloads.mailchimp.com/js/mc-validate.js"></script>
-                        <script
-                            type="text/javascript">(function ($) { window.fnames = new Array(); window.ftypes = new Array(); fnames[0] = 'EMAIL'; ftypes[0] = 'email'; }(jQuery)); var $mcj = jQuery.noConflict(true);</script>
+            <!-- Start MailChimp Signup -->
+            <div id="mc_embed_shell">
+              <link
+                href="//cdn-images.mailchimp.com/embedcode/classic-061523.css"
+                rel="stylesheet"
+                type="text/css"
+              />
+              <div id="mc_embed_signup">
+                <form
+                  action="https://lsu.us14.list-manage.com/subscribe/post?u=3fbe06c4b5aae68573aca449f&amp;id=f4f04f8c53&amp;f_id=007b5ce5f0"
+                  method="post"
+                  id="mc-embedded-subscribe-form"
+                  name="mc-embedded-subscribe-form"
+                  class="validate m-0"
+                  target="_blank"
+                >
+                  <div id="mc_embed_signup_scroll">
+                    <div class="mc-field-group w-100">
+                      <input
+                        type="email"
+                        name="EMAIL"
+                        class="required email"
+                        id="mce-EMAIL"
+                        required=""
+                        value=""
+                        placeholder="Enter your email address"
+                      />
                     </div>
-                    <!-- End MailChimp Signup -->
 
-                </div>
+                    <div id="mce-responses" class="clear">
+                      <div
+                        class="response"
+                        id="mce-error-response"
+                        style="display: none"
+                      ></div>
+                      <div
+                        class="response"
+                        id="mce-success-response"
+                        style="display: none"
+                      ></div>
+                    </div>
+                    <div
+                      aria-hidden="true"
+                      style="position: absolute; left: -5000px"
+                    >
+                      <input
+                        type="text"
+                        name="b_3fbe06c4b5aae68573aca449f_f4f04f8c53"
+                        tabindex="-1"
+                        value=""
+                      />
+                    </div>
+                    <div class="clear text-center">
+                      <input
+                        type="submit"
+                        name="subscribe"
+                        id="mc-embedded-subscribe"
+                        class="button m-0"
+                        value="Subscribe"
+                      />
+                    </div>
+                  </div>
+                </form>
+              </div>
+              <script
+                type="text/javascript"
+                src="//s3.amazonaws.com/downloads.mailchimp.com/js/mc-validate.js"
+              ></script>
+              <script type="text/javascript">
+                (function ($) {
+                  window.fnames = new Array();
+                  window.ftypes = new Array();
+                  fnames[0] = "EMAIL";
+                  ftypes[0] = "email";
+                })(jQuery);
+                var $mcj = jQuery.noConflict(true);
+              </script>
             </div>
+            <!-- End MailChimp Signup -->
+          </div>
         </div>
+      </div>
     </div>
 
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-        crossorigin="anonymous"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+      crossorigin="anonymous"
+    ></script>
     <script>
-        // Pre-compile arrays for better performance
-        const fonts = [
-            'krok', 'octothorpe-pe', 'carol-gothic', 'tephra',
-            'strenuous-3d', 'synthemesc', 'viva-std-condensed', 'macula-solid'
-        ];
-        const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-        const letterCount = letters.length;
-        const fontCount = fonts.length;
+      // Pre-compile arrays for better performance
+      const fonts = [
+        "krok",
+        "octothorpe-pe",
+        "carol-gothic",
+        "tephra",
+        "strenuous-3d",
+        "synthemesc",
+        "viva-std-condensed",
+        "macula-solid",
+      ];
+      const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+      const letterCount = letters.length;
+      const fontCount = fonts.length;
 
-        // Cache DOM elements
-        let grid = null;
-        let gridElements = [];
-        let animationId = null;
-        let lastUpdate = 0;
-        let isVisible = true;
+      // Cache DOM elements
+      let grid = null;
+      let gridElements = [];
+      let animationId = null;
+      let lastUpdate = 0;
+      let isVisible = true;
 
-        // Performance settings based on device
-        let updateInterval = 50;
-        let cellSize = 160;
+      // Performance settings based on device
+      let updateInterval = 50;
+      let cellSize = 160;
 
-        // Detect device capabilities
-        function detectDevice() {
-            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-            const isLowEnd = navigator.hardwareConcurrency <= 2 || navigator.deviceMemory <= 2;
+      // Detect device capabilities
+      function detectDevice() {
+        const isMobile =
+          /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+            navigator.userAgent
+          );
+        const isLowEnd =
+          navigator.hardwareConcurrency <= 2 || navigator.deviceMemory <= 2;
 
-            if (isMobile || isLowEnd) {
-                updateInterval = 100; // Slower updates on mobile/low-end devices
-                cellSize = window.innerWidth < 768 ? 100 : 140;
-            }
+        if (isMobile || isLowEnd) {
+          updateInterval = 100; // Slower updates on mobile/low-end devices
+          cellSize = window.innerWidth < 768 ? 100 : 140;
+        }
+      }
+
+      // Optimized random number generation
+      function fastRandom(max) {
+        return Math.floor(Math.random() * max);
+      }
+
+      // Efficient grid creation with object pooling
+      function createLetterGrid() {
+        if (!grid) {
+          grid = document.getElementById("letterGrid");
         }
 
-        // Optimized random number generation
-        function fastRandom(max) {
-            return Math.floor(Math.random() * max);
+        const gridWidth = Math.ceil(window.innerWidth / cellSize);
+        const gridHeight = Math.ceil(window.innerHeight / cellSize);
+        const totalLetters = gridWidth * gridHeight;
+
+        // Only recreate if count changed significantly (avoid constant recreation)
+        const currentCount = gridElements.length;
+        const countDifference = Math.abs(currentCount - totalLetters);
+
+        if (countDifference > 5) {
+          // Clear existing elements
+          grid.innerHTML = "";
+          gridElements = [];
+
+          // Create document fragment for efficient DOM manipulation
+          const fragment = document.createDocumentFragment();
+
+          for (let i = 0; i < totalLetters; i++) {
+            const div = document.createElement("div");
+            div.className = "letter";
+            div.textContent = letters[fastRandom(letterCount)];
+            div.style.fontFamily = fonts[fastRandom(fontCount)];
+            div.nextUpdate = Date.now() + fastRandom(300) + 300;
+
+            fragment.appendChild(div);
+            gridElements.push(div);
+          }
+
+          grid.appendChild(fragment);
+        }
+      }
+
+      // Optimized update function using requestAnimationFrame
+      function update(timestamp) {
+        // Throttle updates based on device capabilities
+        if (timestamp - lastUpdate < updateInterval) {
+          animationId = requestAnimationFrame(update);
+          return;
         }
 
-        // Efficient grid creation with object pooling
-        function createLetterGrid() {
-            if (!grid) {
-                grid = document.getElementById('letterGrid');
-            }
+        lastUpdate = timestamp;
+        const now = Date.now();
 
-            const gridWidth = Math.ceil(window.innerWidth / cellSize);
-            const gridHeight = Math.ceil(window.innerHeight / cellSize);
-            const totalLetters = gridWidth * gridHeight;
+        // Batch DOM updates for better performance
+        const elementsToUpdate = [];
 
-            // Only recreate if count changed significantly (avoid constant recreation)
-            const currentCount = gridElements.length;
-            const countDifference = Math.abs(currentCount - totalLetters);
+        for (let i = 0; i < gridElements.length; i++) {
+          const letter = gridElements[i];
 
-            if (countDifference > 5) {
-                // Clear existing elements
-                grid.innerHTML = '';
-                gridElements = [];
-
-                // Create document fragment for efficient DOM manipulation
-                const fragment = document.createDocumentFragment();
-
-                for (let i = 0; i < totalLetters; i++) {
-                    const div = document.createElement('div');
-                    div.className = 'letter';
-                    div.textContent = letters[fastRandom(letterCount)];
-                    div.style.fontFamily = fonts[fastRandom(fontCount)];
-                    div.nextUpdate = Date.now() + fastRandom(300) + 300;
-
-                    fragment.appendChild(div);
-                    gridElements.push(div);
-                }
-
-                grid.appendChild(fragment);
-            }
-        }
-
-        // Optimized update function using requestAnimationFrame
-        function update(timestamp) {
-            // Throttle updates based on device capabilities
-            if (timestamp - lastUpdate < updateInterval) {
-                animationId = requestAnimationFrame(update);
-                return;
-            }
-
-            lastUpdate = timestamp;
-            const now = Date.now();
-
-            // Batch DOM updates for better performance
-            const elementsToUpdate = [];
-
-            for (let i = 0; i < gridElements.length; i++) {
-                const letter = gridElements[i];
-
-                if (now >= letter.nextUpdate) {
-                    elementsToUpdate.push({
-                        element: letter,
-                        letter: letters[fastRandom(letterCount)],
-                        font: fonts[fastRandom(fontCount)],
-                        nextUpdate: now + fastRandom(300) + 300
-                    });
-                }
-            }
-
-            // Apply updates in a single batch
-            if (elementsToUpdate.length > 0) {
-                for (const update of elementsToUpdate) {
-                    update.element.textContent = update.letter;
-                    update.element.style.fontFamily = update.font;
-                    update.element.nextUpdate = update.nextUpdate;
-                }
-            }
-
-            if (isVisible) {
-                animationId = requestAnimationFrame(update);
-            }
-        }
-
-        // Debounced resize handler
-        let resizeTimeout;
-        function handleResize() {
-            clearTimeout(resizeTimeout);
-            resizeTimeout = setTimeout(() => {
-                createLetterGrid();
-            }, 250);
-        }
-
-        // Visibility API to pause animations when page is hidden
-        function handleVisibilityChange() {
-            if (document.hidden) {
-                isVisible = false;
-                if (animationId) {
-                    cancelAnimationFrame(animationId);
-                }
-            } else {
-                isVisible = true;
-                animationId = requestAnimationFrame(update);
-            }
-        }
-
-        // Initialize
-        function init() {
-            detectDevice();
-            createLetterGrid();
-
-            // Start animation loop
-            animationId = requestAnimationFrame(update);
-
-            // Event listeners
-            window.addEventListener('resize', handleResize, { passive: true });
-            document.addEventListener('visibilitychange', handleVisibilityChange);
-
-            // Cleanup on page unload
-            window.addEventListener('beforeunload', () => {
-                if (animationId) {
-                    cancelAnimationFrame(animationId);
-                }
+          if (now >= letter.nextUpdate) {
+            elementsToUpdate.push({
+              element: letter,
+              letter: letters[fastRandom(letterCount)],
+              font: fonts[fastRandom(fontCount)],
+              nextUpdate: now + fastRandom(300) + 300,
             });
+          }
         }
 
-        // Start when DOM is ready
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', init);
+        // Apply updates in a single batch
+        if (elementsToUpdate.length > 0) {
+          for (const update of elementsToUpdate) {
+            update.element.textContent = update.letter;
+            update.element.style.fontFamily = update.font;
+            update.element.nextUpdate = update.nextUpdate;
+          }
+        }
+
+        if (isVisible) {
+          animationId = requestAnimationFrame(update);
+        }
+      }
+
+      // Debounced resize handler
+      let resizeTimeout;
+      function handleResize() {
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(() => {
+          createLetterGrid();
+        }, 250);
+      }
+
+      // Visibility API to pause animations when page is hidden
+      function handleVisibilityChange() {
+        if (document.hidden) {
+          isVisible = false;
+          if (animationId) {
+            cancelAnimationFrame(animationId);
+          }
         } else {
-            init();
+          isVisible = true;
+          animationId = requestAnimationFrame(update);
         }
-    </script>
-</body>
+      }
 
+      // Initialize
+      function init() {
+        detectDevice();
+        createLetterGrid();
+
+        // Start animation loop
+        animationId = requestAnimationFrame(update);
+
+        // Event listeners
+        window.addEventListener("resize", handleResize, { passive: true });
+        document.addEventListener("visibilitychange", handleVisibilityChange);
+
+        // Cleanup on page unload
+        window.addEventListener("beforeunload", () => {
+          if (animationId) {
+            cancelAnimationFrame(animationId);
+          }
+        });
+      }
+
+      // Start when DOM is ready
+      if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", init);
+      } else {
+        init();
+      }
+    </script>
+  </body>
 </html>
